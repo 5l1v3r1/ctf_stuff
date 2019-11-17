@@ -5,6 +5,7 @@ import random
 
 alphabet = string.printable
 session = requests.Session()
+
 url_shop = 'http://shop2.race.sinketsu.ru/'
 users = []
 users_count = 20
@@ -17,10 +18,10 @@ def generate_string():
     return string
 
 
-def reg(login, password):
-    r = session.post(url_shop + 'signup', data={'login': login, 'password': password})
-    print('Reg new user:', login, password, 'Status: ', r)
-    users.append({'login': login, 'password': password, 'cookie': session.cookies.get_dict()})
+def reg(user):
+    r = session.post(url_shop + 'signup', data=user)
+    print('Reg new user:', user, 'Status: ', r)
+    users.append({'login': user['login'], 'password': user['password'], 'cookie': session.cookies.get_dict()})
 
 
 def share_money(x):
@@ -32,8 +33,7 @@ def share_money(x):
 
 
 for i in range(users_count):
-    user = {'login': generate_string(), 'password': generate_string()}
-    reg(**user)
+    reg({'login': generate_string(), 'password': generate_string()})
 
 p = Pool(users_count)
 p.map(share_money, range(users_count))
